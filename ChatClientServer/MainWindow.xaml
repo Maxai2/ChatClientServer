@@ -1,0 +1,59 @@
+﻿<Window x:Class="ChatClientServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChatClientServer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="3*" MinHeight="100"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto" MinHeight="40"/>
+		</Grid.RowDefinitions>
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<ListBox Grid.Row="0" Name="lbMessages" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+
+			<Expander Grid.Row="0" HorizontalAlignment="Right" ExpandDirection="Right" Grid.Column="1" Background="#E5DDD5">
+				<ListBox>
+					<ListBoxItem Content="qwerty"/>
+				</ListBox>
+			</Expander>
+		</Grid>
+
+		<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
+
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<TextBox  Grid.Column="0" Name="tbUser" AcceptsReturn="True" IsTabStop="True"
+                      AllowDrop="True" KeyDown="TextBox_KeyDown" FontFamily="Segoe Print" FontSize="15" Margin="5" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
+
+			<Border Grid.Column="1" Background="#00887A" CornerRadius="15" Width="30" Height="30"/>
+			<Button Margin="5" Height="30" Width="30" Grid.Column="1" IsTabStop="False" BorderThickness="0" Click="Button_Click" Background="White">
+				<Button.OpacityMask>
+
+					<VisualBrush>
+						<VisualBrush.Visual>
+							<Border BorderThickness="0" Width="80" Height="80" Background="Transparent">
+								<Image Source="SendIcon.png" Width="50" Height="50" Margin="15 0 0 0" />
+							</Border>
+						</VisualBrush.Visual>
+					</VisualBrush>
+
+				</Button.OpacityMask>
+			</Button>
+
+		</Grid>
+	</Grid>
+</Window>
