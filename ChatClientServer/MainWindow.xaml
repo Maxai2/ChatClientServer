@@ -4,40 +4,97 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatClientServer"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-	<Grid>
+        mc:Ignorable="d" Title="MainWindow" Height="450" Width="800"  Background="AliceBlue" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" BorderBrush="Transparent">
+	<!--AllowsTransparency="True"-->
+	<Grid Margin="2">
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="3*" MinHeight="100"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto" MinHeight="40"/>
 		</Grid.RowDefinitions>
+		
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
 
-		<Grid>
+		<Expander ExpandDirection="Right" HorizontalAlignment="Center"  VerticalAlignment="Top" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" Margin="0 2 0 0">
+			<ListBox>
+				<ListBoxItem Content="qwerty"/>
+				<ListBoxItem Content="qwerty"/>
+				<ListBoxItem Content="qwerty"/>
+				<ListBoxItem Content="qwerty"/>
+
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="ListBoxItem">
+						<Setter Property="IsHitTestVisible" Value="False"/>
+					</Style>
+				</ListBox.ItemContainerStyle>
+
+			</ListBox>
+		</Expander>
+
+		<Button Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" BorderThickness="0" Background="Transparent" Content="X" FontSize="20"  Cursor="Hand" Click="Button_Click_1"/>
+
+		<Grid Grid.Row="0" Margin="2">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="9*"/>
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
-			<ListBox Grid.Row="0" Name="lbMessages" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+			<TextBlock Grid.Column="0" Text="Nickname" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-			<Expander Grid.Row="0" HorizontalAlignment="Right" ExpandDirection="Right" Grid.Column="1" Background="#E5DDD5">
-				<ListBox>
-					<ListBoxItem Content="qwerty"/>
-				</ListBox>
-			</Expander>
+			<TextBox Name="tbIp" Grid.Column="1" Text="{Binding ConDisConIp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Justify">
+				<TextBox.InputBindings>
+					<KeyBinding Key="Enter" Command="{Binding ConnectCom}"/>
+				</TextBox.InputBindings>
+			</TextBox>
+
+			<Button Grid.Column="2" Margin="5 0 0 0" Content="Connect" Command="{Binding ConnectCom}" Visibility="{Binding ConButVis}"/>
+			<Button Grid.Column="2" Margin="5 0 0 0" Content="Disconnect" Visibility="{Binding DisconButVis}" Command="{Binding DisconnectCom}"/>
+
+			
+
 		</Grid>
 
-		<GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
+		<Grid Grid.Row="1">
+			<ListBox Name="lbMessages" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-		<Grid Grid.Row="2">
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="ListBoxItem">
+						<Setter Property="IsHitTestVisible" Value="False"/>
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
+
+				<!--<Border Margin="0 5 2 0" Background="#00887A" CornerRadius="20" Width="17" Height="17" HorizontalAlignment="Right" VerticalAlignment="Center">
+					<Button Height="17" Width="17" IsTabStop="False" BorderThickness="0" Background="White">
+						<Button.OpacityMask>
+
+							<VisualBrush>
+								<VisualBrush.Visual>
+										<TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
+								</VisualBrush.Visual>
+							</VisualBrush>
+
+						</Button.OpacityMask>
+					</Button>
+				</Border>-->
+			
+		</Grid>
+
+		<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
+
+		<Grid Grid.Row="3">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
 			<TextBox  Grid.Column="0" Name="tbUser" AcceptsReturn="True" IsTabStop="True"
-                      AllowDrop="True" KeyDown="TextBox_KeyDown" FontFamily="Segoe Print" FontSize="15" Margin="5" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
+                      AllowDrop="True" KeyDown="TextBox_KeyDown" FontFamily="Segoe Print" FontSize="15" Margin="0 5 5 5" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
 
 			<Border Grid.Column="1" Background="#00887A" CornerRadius="15" Width="30" Height="30"/>
 			<Button Margin="5" Height="30" Width="30" Grid.Column="1" IsTabStop="False" BorderThickness="0" Click="Button_Click" Background="White">

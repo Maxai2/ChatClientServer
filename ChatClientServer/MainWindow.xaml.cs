@@ -18,7 +18,6 @@ namespace ChatClientServer
         Dictionary<bool, HorizontalAlignment> alignment;
 
         bool rightLeft = false;
-        string path = "Messages.txt";
 
         //----------------------------------------------------------------------------
         public MainWindow()
@@ -86,32 +85,15 @@ namespace ChatClientServer
         {
             SendMessage();
         }
-        //----------------------------------------------------------------------------
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            using (StreamReader sr = new StreamReader(path))
-            {
-                int n = Int16.Parse(sr.ReadLine());
 
-                for (int i = 0; i < n; i++)
-                    listFill(sr.ReadLine());
-            }
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
-        //----------------------------------------------------------------------------
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            if (collection.Count != 0)
-            {
-                using (StreamWriter sw = new StreamWriter(path, false))
-                {
-                    sw.WriteLine(collection.Count);
 
-                    foreach (ListBoxItem item in collection)
-                    {
-                        sw.WriteLine(item.Tag);
-                    }
-                }
-            }
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }
