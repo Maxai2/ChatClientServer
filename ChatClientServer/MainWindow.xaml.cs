@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,9 +12,74 @@ using System.Windows.Media;
 
 namespace ChatClientServer
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        ObservableCollection<object> collection = new ObservableCollection<object>();
+        private string conDisConIp;
+        public string ConDisConIp
+        {
+            get { return conDisConIp; }
+            set { conDisConIp = value; OnChanged(); }
+        }
+
+        private string textMessage;
+        public string TextMessage
+        {
+            get { return textMessage; }
+            set { textMessage = value; OnChanged(); }
+        }
+
+        private Visibility conButVis;
+        public Visibility ConButVis
+        {
+            get { return conButVis; }
+            set { conButVis = value; OnChanged(); }
+        }
+
+        private Visibility disconButVis = Visibility.Collapsed;
+        public Visibility DisconButVis
+        {
+            get { return disconButVis; }
+            set { disconButVis = value; OnChanged(); }
+        }
+
+
+        private ICommand connectCom;
+        public ICommand ConnectCom
+        {
+            get
+            {
+                if (connectCom is null)
+                {
+                    connectCom = new RelayCommand(
+                        (param) =>
+                        {
+
+                        });
+                }
+
+                return connectCom;
+            }
+        }
+
+        private ICommand disconnectCom;
+        public ICommand DisconnectCom
+        {
+            get
+            {
+                if (disconnectCom is null)
+                {
+                    disconnectCom = new RelayCommand(
+                        (param) =>
+                        {
+
+                        });
+                }
+
+                return disconnectCom;
+            }
+        }
+
+        public ObservableCollection<object> MessageList { get; set; }
 
         Dictionary<bool, SolidColorBrush> color;
         Dictionary<bool, HorizontalAlignment> alignment;
@@ -20,10 +87,12 @@ namespace ChatClientServer
         bool rightLeft = false;
 
         //----------------------------------------------------------------------------
+
         public MainWindow()
         {
             InitializeComponent();
-            lbMessages.ItemsSource = collection;
+
+            DataContext = this;
 
             color = new Dictionary<bool, SolidColorBrush>()
             {
@@ -37,10 +106,12 @@ namespace ChatClientServer
                 { true, HorizontalAlignment.Right}
             };
         }
+
         //----------------------------------------------------------------------------
+
         void listFill(string str)
         {
-            collection.Add(new ListBoxItem()
+            MessageList.Add(new ListBoxItem()
             {
                 HorizontalAlignment = alignment[rightLeft],
                 IsTabStop = false,
@@ -68,32 +139,29 @@ namespace ChatClientServer
 
             tbUser.Clear();
         }
+
         //----------------------------------------------------------------------------
-        void SendMessage()
-        {
-            if (tbUser.Text != String.Empty)
-                listFill(tbUser.Text);
-        }
+
+        
+
         //----------------------------------------------------------------------------
-        private void TextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) && Keyboard.IsKeyDown(Key.Enter))
-                SendMessage();
-        }
-        //----------------------------------------------------------------------------
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            SendMessage();
-        }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void CloseButton(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        //----------------------------------------------------------------------
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnChanged([CallerMemberName]string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

@@ -35,7 +35,7 @@
 			</ListBox>
 		</Expander>
 
-		<Button Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" BorderThickness="0" Background="Transparent" Content="X" FontSize="20"  Cursor="Hand" Click="Button_Click_1"/>
+		<Button Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" BorderThickness="0" Background="Transparent" Content="X" FontSize="20"  Cursor="Hand" Click="CloseButton"/>
 
 		<Grid Grid.Row="0" Margin="2">
 			<Grid.ColumnDefinitions>
@@ -54,13 +54,11 @@
 
 			<Button Grid.Column="2" Margin="5 0 0 0" Content="Connect" Command="{Binding ConnectCom}" Visibility="{Binding ConButVis}"/>
 			<Button Grid.Column="2" Margin="5 0 0 0" Content="Disconnect" Visibility="{Binding DisconButVis}" Command="{Binding DisconnectCom}"/>
-
 			
-
 		</Grid>
 
 		<Grid Grid.Row="1">
-			<ListBox Name="lbMessages" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+			<ListBox ItemsSource="{Binding MessageList}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
 				<ListBox.ItemContainerStyle>
 					<Style TargetType="ListBoxItem">
@@ -68,21 +66,6 @@
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
-
-				<!--<Border Margin="0 5 2 0" Background="#00887A" CornerRadius="20" Width="17" Height="17" HorizontalAlignment="Right" VerticalAlignment="Center">
-					<Button Height="17" Width="17" IsTabStop="False" BorderThickness="0" Background="White">
-						<Button.OpacityMask>
-
-							<VisualBrush>
-								<VisualBrush.Visual>
-										<TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
-								</VisualBrush.Visual>
-							</VisualBrush>
-
-						</Button.OpacityMask>
-					</Button>
-				</Border>-->
-			
 		</Grid>
 
 		<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
@@ -93,11 +76,14 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
-			<TextBox  Grid.Column="0" Name="tbUser" AcceptsReturn="True" IsTabStop="True"
-                      AllowDrop="True" KeyDown="TextBox_KeyDown" FontFamily="Segoe Print" FontSize="15" Margin="0 5 5 5" AcceptsTab="True" VerticalScrollBarVisibility="Auto"/>
+			<TextBox Grid.Column="0" Text="{Binding TextMessage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" IsTabStop="True" AllowDrop="True" FontFamily="Segoe Print" FontSize="15" Margin="0 5 5 5" AcceptsTab="True" VerticalScrollBarVisibility="Auto">
+				<TextBox.InputBindings>
+					<KeyBinding Key="Enter" Command="{Binding SendMessage}"/>
+				</TextBox.InputBindings>
+			</TextBox>
 
 			<Border Grid.Column="1" Background="#00887A" CornerRadius="15" Width="30" Height="30"/>
-			<Button Margin="5" Height="30" Width="30" Grid.Column="1" IsTabStop="False" BorderThickness="0" Click="Button_Click" Background="White">
+			<Button Margin="5" Height="30" Width="30" Grid.Column="1" IsTabStop="False" BorderThickness="0" Command="{Binding SendMessage}" Background="White">
 				<Button.OpacityMask>
 
 					<VisualBrush>
@@ -114,3 +100,19 @@
 		</Grid>
 	</Grid>
 </Window>
+
+
+
+<!--<Border Margin="0 5 2 0" Background="#00887A" CornerRadius="20" Width="17" Height="17" HorizontalAlignment="Right" VerticalAlignment="Center">
+					<Button Height="17" Width="17" IsTabStop="False" BorderThickness="0" Background="White">
+						<Button.OpacityMask>
+
+							<VisualBrush>
+								<VisualBrush.Visual>
+										<TextBlock Text="+" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10"/>
+								</VisualBrush.Visual>
+							</VisualBrush>
+
+						</Button.OpacityMask>
+					</Button>
+				</Border>-->
