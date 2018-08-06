@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,14 +16,14 @@ namespace ChatClientServer
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private string conDisConIp;
+        private string conDisConIp = "";
         public string ConDisConIp
         {
             get { return conDisConIp; }
             set { conDisConIp = value; OnChanged(); }
         }
 
-        private string textMessage;
+        private string textMessage = "";
         public string TextMessage
         {
             get { return textMessage; }
@@ -86,6 +88,9 @@ namespace ChatClientServer
 
         bool rightLeft = false;
 
+        Socket socket;
+        EndPoint ep;
+
         //----------------------------------------------------------------------------
 
         public MainWindow()
@@ -93,6 +98,9 @@ namespace ChatClientServer
             InitializeComponent();
 
             DataContext = this;
+
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
+            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
 
             color = new Dictionary<bool, SolidColorBrush>()
             {
@@ -133,11 +141,11 @@ namespace ChatClientServer
                 }
             });
 
-            lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
+            //lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
 
             rightLeft = !rightLeft;
 
-            tbUser.Clear();
+            TextMessage = "";
         }
 
         //----------------------------------------------------------------------------

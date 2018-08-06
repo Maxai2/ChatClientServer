@@ -33,7 +33,24 @@ namespace ChatServer
                 {
                     var length = socket.ReceiveFrom(bytes, ref client);
                     var msg = Encoding.Default.GetString(bytes, 0, length);
+
+
                 }
+            }
+        }
+
+        static void ParseMsg(string msg)
+        {
+            var mode = msg.Substring(0, msg.IndexOf(':'));
+
+            var variable = msg.Substring(msg.IndexOf(':') + 1);
+
+            switch (mode)
+            {
+                case "Connect":
+                    break;
+                case "Send":
+                    break;
             }
         }
     }
