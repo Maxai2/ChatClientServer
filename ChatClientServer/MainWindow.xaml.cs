@@ -7,20 +7,23 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ClientDLL;
 
 namespace ChatClientServer
 {
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private string conDisConIp = "";
-        public string ConDisConIp
+        private string nickName = "";
+        public string NickName
         {
-            get { return conDisConIp; }
-            set { conDisConIp = value; OnChanged(); }
+            get { return nickName; }
+            set { nickName = value; OnChanged(); }
         }
 
         private string textMessage = "";
@@ -55,7 +58,31 @@ namespace ChatClientServer
                     connectCom = new RelayCommand(
                         (param) =>
                         {
+                            var msg = "Connect:" + NickName;
+                            var data = Encoding.Default.GetBytes(msg);
+                            socket.SendTo(data, ep);
 
+                            var answer = new byte[socket.ReceiveBufferSize];
+
+                            var length = socket.Receive(answer);
+
+                            if (length != 0)
+                            {
+                                var mStream = new MemoryStream();
+                                var binFormatter = new BinaryFormatter();
+
+                                mStream.Write(answer, 0, length);
+                                mStream.Position = 0;
+
+                                var tempCol = binFormatter.Deserialize(mStream) as List<Client>;
+
+                                Clients.Clear();
+
+                                foreach (var item in tempCol)
+                                {
+                                    Clients.Add(item.NickName);
+                                }
+                            }
                         });
                 }
 
@@ -82,6 +109,7 @@ namespace ChatClientServer
         }
 
         public ObservableCollection<object> MessageList { get; set; }
+        public ObservableCollection<string> Clients { get; set; }
 
         Dictionary<bool, SolidColorBrush> color;
         Dictionary<bool, HorizontalAlignment> alignment;
@@ -101,6 +129,9 @@ namespace ChatClientServer
 
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
             ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
+
+            MessageList = new ObservableCollection<object>();
+            Clients = new ObservableCollection<string>();
 
             color = new Dictionary<bool, SolidColorBrush>()
             {
@@ -158,6 +189,8 @@ namespace ChatClientServer
         {
             this.DragMove();
         }
+
+        //----------------------------------------------------------------------
 
         private void CloseButton(object sender, RoutedEventArgs e)
         {

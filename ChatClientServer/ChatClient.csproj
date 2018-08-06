@@ -97,5 +97,11 @@
   <ItemGroup>
     <Resource Include="SendIcon.PNG" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ClientD\ClientDLL.csproj">
+      <Project>{dbcfffac-7225-44af-ba3a-fc1a7702c9a7}</Project>
+      <Name>ClientDLL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

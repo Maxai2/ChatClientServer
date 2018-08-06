@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using ClientDLL;
 
 namespace ChatServer
 {
     class Program
     {
         static Socket socket;
+        static EndPoint ep;
+        static List<Client> clients = new List<Client>();
 
         //---------------------------------------------------------------------
 
@@ -34,12 +39,16 @@ namespace ChatServer
                     var length = socket.ReceiveFrom(bytes, ref client);
                     var msg = Encoding.Default.GetString(bytes, 0, length);
 
+                    var sendArr = ParseMsg(msg);
 
+                    socket.SendTo(sendArr, client);
                 }
             }
         }
 
-        static void ParseMsg(string msg)
+        //---------------------------------------------------------------------
+
+        static byte[] ParseMsg(string msg)
         {
             var mode = msg.Substring(0, msg.IndexOf(':'));
 
@@ -48,10 +57,23 @@ namespace ChatServer
             switch (mode)
             {
                 case "Connect":
-                    break;
+                    clients.Add(new Client()
+                    {
+                        NickName = variable
+                    });
+
+                    var binFormatter = new BinaryFormatter();
+                    var mStream = new MemoryStream();
+
+                    binFormatter.Serialize(mStream, clients);
+
+                    return mStream.ToArray();
                 case "Send":
-                    break;
+
+                    return null;
             }
+
+            return null;
         }
     }
 }

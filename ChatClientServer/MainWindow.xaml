@@ -20,11 +20,7 @@
 		</Grid.ColumnDefinitions>
 
 		<Expander ExpandDirection="Right" HorizontalAlignment="Center"  VerticalAlignment="Top" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" Margin="0 2 0 0">
-			<ListBox>
-				<ListBoxItem Content="qwerty"/>
-				<ListBoxItem Content="qwerty"/>
-				<ListBoxItem Content="qwerty"/>
-				<ListBoxItem Content="qwerty"/>
+			<ListBox ItemsSource="{Binding Clients}">
 
 				<ListBox.ItemContainerStyle>
 					<Style TargetType="ListBoxItem">
@@ -46,7 +42,7 @@
 
 			<TextBlock Grid.Column="0" Text="Nickname" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-			<TextBox Name="tbIp" Grid.Column="1" Text="{Binding ConDisConIp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Justify">
+			<TextBox Name="tbIp" Grid.Column="1" Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Justify">
 				<TextBox.InputBindings>
 					<KeyBinding Key="Enter" Command="{Binding ConnectCom}"/>
 				</TextBox.InputBindings>
