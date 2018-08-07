@@ -15,14 +15,16 @@ namespace ChatServer
     {
         static Socket socket;
         static EndPoint ep;
-        static List<Client> clients = new List<Client>();
+        static List<Client> clients;
 
         //---------------------------------------------------------------------
 
         static void Main(string[] args)
         {
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
-            var ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
+            clients = new List<Client>();
+
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
 
             socket.Bind(ep);
 
@@ -39,9 +41,14 @@ namespace ChatServer
                     var length = socket.ReceiveFrom(bytes, ref client);
                     var msg = Encoding.Default.GetString(bytes, 0, length);
 
-                    var sendArr = ParseMsg(msg);
+                    if (length != 0)
+                    {
+                        var sendArr = ParseMsg(msg);
 
-                    socket.SendTo(sendArr, client);
+                        socket.SendTo(sendArr, client);
+                    }
+                    else
+                        break;
                 }
             }
         }
@@ -57,23 +64,36 @@ namespace ChatServer
             switch (mode)
             {
                 case "Connect":
-                    clients.Add(new Client()
+                    if (clients.Count == 0)
+                        clients.Add(new Client() { NickName = variable });
+                    else
                     {
-                        NickName = variable
-                    });
+                        var result = clients.FirstOrDefault((c) => c.NickName == variable);
 
-                    var binFormatter = new BinaryFormatter();
-                    var mStream = new MemoryStream();
-
-                    binFormatter.Serialize(mStream, clients);
-
-                    return mStream.ToArray();
+                        if (result == null)
+                            clients.Add(new Client() { NickName = variable });
+                    }
+                    break;
                 case "Send":
+                    var nk = variable.Substring(0, variable.LastIndexOf(':'));
+                    var text = variable.Substring(variable.LastIndexOf(':') + 1);
 
-                    return null;
+                    var client = clients.FirstOrDefault((c) => c.NickName == nk);
+
+                    if (client.Messages == null)
+                        client.Messages = new List<string>() { text };
+                    else
+                        client.Messages.Add(text);
+
+                    break;
             }
 
-            return null;
+            var binFormatter = new BinaryFormatter();
+            var mStream = new MemoryStream();
+
+            binFormatter.Serialize(mStream, clients);
+
+            return mStream.ToArray();
         }
     }
 }

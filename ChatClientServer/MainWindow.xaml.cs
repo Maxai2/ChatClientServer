@@ -11,9 +11,11 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using ClientDLL;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ChatClientServer
 {
@@ -47,6 +49,26 @@ namespace ChatClientServer
             set { disconButVis = value; OnChanged(); }
         }
 
+        private Visibility messageListVis;
+        public Visibility MessageListVis
+        {
+            get { return messageListVis; }
+            set { messageListVis = value; OnChanged(); }
+        }
+
+        private Visibility sendMessageVis;
+        public Visibility SendMessageVis
+        {
+            get { return sendMessageVis; }
+            set { sendMessageVis = value; OnChanged(); }
+        }
+
+        private bool nickNameEnab = true;
+        public bool NickNameEnab
+        {
+            get { return nickNameEnab; }
+            set { nickNameEnab = value; OnChanged(); }
+        }
 
         private ICommand connectCom;
         public ICommand ConnectCom
@@ -58,7 +80,10 @@ namespace ChatClientServer
                     connectCom = new RelayCommand(
                         (param) =>
                         {
-                            var msg = "Connect:" + NickName;
+                            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
+
+                            var msg = $"Connect:{NickName}";
                             var data = Encoding.Default.GetBytes(msg);
                             socket.SendTo(data, ep);
 
@@ -80,9 +105,39 @@ namespace ChatClientServer
 
                                 foreach (var item in tempCol)
                                 {
-                                    Clients.Add(item.NickName);
+                                    if (item.NickName == NickName)
+                                        Clients.Add(new Run { Text = item.NickName, FontWeight = FontWeights.Bold });
+                                    else
+                                        Clients.Add(new Run { Text = item.NickName });
+
+                                    if (item.Messages != null)
+                                    {
+                                        if (item.Messages == null)
+                                        {
+                                            item.Messages = new List<string>();
+                                        }
+
+                                        foreach (var mes in item.Messages)
+                                        {
+                                            listFill(item.NickName, mes, true);
+                                        }
+                                    }
                                 }
+
+                                MessageList.Clear();
+
+
+                                ConButVis = Visibility.Collapsed;
+                                DisconButVis = Visibility.Visible;
+                                NickNameEnab = false;
                             }
+                        },
+                        (param) =>
+                        {
+                            if (NickName == "")
+                                return false;
+                            else
+                                return true;
                         });
                 }
 
@@ -100,7 +155,12 @@ namespace ChatClientServer
                     disconnectCom = new RelayCommand(
                         (param) =>
                         {
+                            socket.Shutdown(SocketShutdown.Both);
+                            socket.Close();
 
+                            DisconButVis = Visibility.Collapsed;
+                            ConButVis = Visibility.Visible;
+                            NickNameEnab = true;
                         });
                 }
 
@@ -108,13 +168,48 @@ namespace ChatClientServer
             }
         }
 
+        private ICommand sendMessage;
+        public ICommand SendMessage
+        {
+            get
+            {
+                if (sendMessage is null)
+                {
+                    sendMessage = new RelayCommand(
+                        (param) =>
+                        {
+                            var msg = $"Send:{NickName}:{TextMessage}";
+                            var data = Encoding.Default.GetBytes(msg);
+                            socket.SendTo(data, ep);
+
+                            var answer = new byte[socket.ReceiveBufferSize];
+
+                            var length = socket.Receive(answer);
+
+                            if (length != 0)
+                            {
+                                var mStream = new MemoryStream();
+                                var binFormatter = new BinaryFormatter();
+
+                                mStream.Write(answer, 0, length);
+                                mStream.Position = 0;
+
+                                var tempCol = binFormatter.Deserialize(mStream) as List<Client>;
+
+                            }
+
+                        });
+                }
+
+                return sendMessage;
+            }
+        }
+
         public ObservableCollection<object> MessageList { get; set; }
-        public ObservableCollection<string> Clients { get; set; }
+        public ObservableCollection<Run> Clients { get; set; }
 
         Dictionary<bool, SolidColorBrush> color;
         Dictionary<bool, HorizontalAlignment> alignment;
-
-        bool rightLeft = false;
 
         Socket socket;
         EndPoint ep;
@@ -127,11 +222,8 @@ namespace ChatClientServer
 
             DataContext = this;
 
-            socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Udp);
-            ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 7534);
-
             MessageList = new ObservableCollection<object>();
-            Clients = new ObservableCollection<string>();
+            Clients = new ObservableCollection<Run>();
 
             color = new Dictionary<bool, SolidColorBrush>()
             {
@@ -148,13 +240,13 @@ namespace ChatClientServer
 
         //----------------------------------------------------------------------------
 
-        void listFill(string str)
+        void listFill(string name, string message, bool rightLeft)
         {
             MessageList.Add(new ListBoxItem()
             {
                 HorizontalAlignment = alignment[rightLeft],
                 IsTabStop = false,
-                Tag = str,
+                //Tag = str,
 
                 Content = new Border()
                 {
@@ -164,7 +256,7 @@ namespace ChatClientServer
 
                     Child = new TextBlock
                     {
-                        Text = ' ' + str + ' ',
+                        Text = $"<Bold>{name}</Bold>: {message}",
                         TextWrapping = TextWrapping.Wrap,
                         FontSize = 15,
                         FontFamily = new FontFamily("Segoe Print")
@@ -174,14 +266,10 @@ namespace ChatClientServer
 
             //lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
 
-            rightLeft = !rightLeft;
+            //rightLeft = !rightLeft;
 
             TextMessage = "";
         }
-
-        //----------------------------------------------------------------------------
-
-        
 
         //----------------------------------------------------------------------------
 

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatClientServer"
-        mc:Ignorable="d" Title="MainWindow" Height="450" Width="800"  Background="AliceBlue" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" BorderBrush="Transparent">
+        mc:Ignorable="d" Title="MainWindow" Height="450" Width="800"  Background="AliceBlue" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown" BorderBrush="Transparent" WindowStartupLocation="CenterScreen" FocusManager.FocusedElement="{Binding ElementName=NickNamePlace}">
 	<!--AllowsTransparency="True"-->
 	<Grid Margin="2">
 		<Grid.RowDefinitions>
@@ -42,7 +42,7 @@
 
 			<TextBlock Grid.Column="0" Text="Nickname" Margin="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-			<TextBox Name="tbIp" Grid.Column="1" Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Justify">
+			<TextBox Name="NickNamePlace" Grid.Column="1" Text="{Binding NickName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextAlignment="Justify" IsEnabled="{Binding NickNameEnab}">
 				<TextBox.InputBindings>
 					<KeyBinding Key="Enter" Command="{Binding ConnectCom}"/>
 				</TextBox.InputBindings>
@@ -53,7 +53,7 @@
 			
 		</Grid>
 
-		<Grid Grid.Row="1">
+		<Grid Grid.Row="1" IsEnabled="{Binding MessageListVis}">
 			<ListBox ItemsSource="{Binding MessageList}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
 				<ListBox.ItemContainerStyle>
@@ -66,7 +66,7 @@
 
 		<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
 
-		<Grid Grid.Row="3">
+		<Grid Grid.Row="3" IsEnabled="{Binding	SendMessageVis}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
