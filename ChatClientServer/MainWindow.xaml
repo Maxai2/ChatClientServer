@@ -53,16 +53,29 @@
 			
 		</Grid>
 
-		<Grid Grid.Row="1" IsEnabled="{Binding MessageListVis}">
-			<ListBox ItemsSource="{Binding MessageList}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
-
+			<ListBox Name="lbMessages" ItemsSource="{Binding MessageList}" Grid.Row="1" IsEnabled="{Binding MessageListVis}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
+				
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock>
+						<TextBlock Text="{Binding Name}" FontWeight="UltraBold"></TextBlock>
+						<TextBlock Text="{Binding Text}"></TextBlock>
+						<TextBlock.Triggers>
+							<DataTrigger Binding="{Binding Type}" Value="Sent">
+								
+							</DataTrigger>
+						</TextBlock.Triggers>
+					</TextBlock>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+				
+				
 				<ListBox.ItemContainerStyle>
 					<Style TargetType="ListBoxItem">
 						<Setter Property="IsHitTestVisible" Value="False"/>
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
-		</Grid>
 
 		<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
 

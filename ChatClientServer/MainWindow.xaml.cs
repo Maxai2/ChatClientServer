@@ -102,30 +102,25 @@ namespace ChatClientServer
                                 var tempCol = binFormatter.Deserialize(mStream) as List<Client>;
 
                                 Clients.Clear();
+                                MessageList.Clear();
 
                                 foreach (var item in tempCol)
                                 {
                                     if (item.NickName == NickName)
-                                        Clients.Add(new Run { Text = item.NickName, FontWeight = FontWeights.Bold });
+                                        Clients.Add(new Run (item.NickName) { FontWeight = FontWeights.Bold });
                                     else
-                                        Clients.Add(new Run { Text = item.NickName });
+                                        Clients.Add(new Run (item.NickName));
 
-                                    if (item.Messages != null)
+                                    if (item.Messages == null)
                                     {
-                                        if (item.Messages == null)
-                                        {
-                                            item.Messages = new List<string>();
-                                        }
+                                        item.Messages = new List<string>();
+                                    }
 
-                                        foreach (var mes in item.Messages)
-                                        {
-                                            listFill(item.NickName, mes, true);
-                                        }
+                                    foreach (var mes in item.Messages)
+                                    {
+                                        listFill(item.NickName, mes, false);
                                     }
                                 }
-
-                                MessageList.Clear();
-
 
                                 ConButVis = Visibility.Collapsed;
                                 DisconButVis = Visibility.Visible;
@@ -160,6 +155,8 @@ namespace ChatClientServer
 
                             DisconButVis = Visibility.Collapsed;
                             ConButVis = Visibility.Visible;
+
+                            ;
                             NickNameEnab = true;
                         });
                 }
@@ -196,6 +193,25 @@ namespace ChatClientServer
 
                                 var tempCol = binFormatter.Deserialize(mStream) as List<Client>;
 
+                                MessageList.Clear();
+
+                                foreach (var item in tempCol)
+                                {
+                                    if (item.NickName == NickName)
+                                    {
+                                        foreach (var mes in item.Messages)
+                                        {
+                                            listFill(item.NickName, mes, true);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var mes in item.Messages)
+                                        {
+                                            listFill(item.NickName, mes, false);
+                                        }
+                                    }
+                                }
                             }
 
                         });
@@ -251,12 +267,13 @@ namespace ChatClientServer
                 Content = new Border()
                 {
                     BorderThickness = new Thickness(2),
-                    CornerRadius = new CornerRadius(10),
+                    CornerRadius = new CornerRadius(7),
                     Background = color[rightLeft],
 
                     Child = new TextBlock
                     {
-                        Text = $"<Bold>{name}</Bold>: {message}",
+                        Text = $"{new Run(name) { FontWeight = FontWeights.Bold }}: {message}",
+                        //Text = $"{name}: {message}",
                         TextWrapping = TextWrapping.Wrap,
                         FontSize = 15,
                         FontFamily = new FontFamily("Segoe Print")
@@ -264,9 +281,7 @@ namespace ChatClientServer
                 }
             });
 
-            //lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
-
-            //rightLeft = !rightLeft;
+            lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
 
             TextMessage = "";
         }
