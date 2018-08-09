@@ -224,8 +224,8 @@ namespace ChatClientServer
         public ObservableCollection<Message> MessageList { get; set; }
         public ObservableCollection<Run> Clients { get; set; }
 
-        Dictionary<bool, SolidColorBrush> color;
-        Dictionary<bool, HorizontalAlignment> alignment;
+        //Dictionary<bool, SolidColorBrush> color;
+        //Dictionary<bool, HorizontalAlignment> alignment;
 
         Socket socket;
         EndPoint ep;
@@ -241,17 +241,17 @@ namespace ChatClientServer
             MessageList = new ObservableCollection<Message>();
             Clients = new ObservableCollection<Run>();
 
-            color = new Dictionary<bool, SolidColorBrush>()
-            {
-                { false, new SolidColorBrush(Colors.White)},
-                { true, new SolidColorBrush(Color.FromRgb(220, 248, 198))}
-            };
+            //color = new Dictionary<bool, SolidColorBrush>()
+            //{
+            //    { false, new SolidColorBrush(Colors.White)},
+            //    { true, new SolidColorBrush(Color.FromRgb(220, 248, 198))}
+            //};
 
-            alignment = new Dictionary<bool, HorizontalAlignment>()
-            {
-                { false, HorizontalAlignment.Left},
-                { true, HorizontalAlignment.Right}
-            };
+            //alignment = new Dictionary<bool, HorizontalAlignment>()
+            //{
+            //    { false, HorizontalAlignment.Left},
+            //    { true, HorizontalAlignment.Right}
+            //};
         }
 
         //----------------------------------------------------------------------------
@@ -284,7 +284,7 @@ namespace ChatClientServer
             MessageList.Add(new Message()
             {
                 leftRight = rightLeft,
-                name = name,
+                name = name + ':',
                 text = message
             });
 

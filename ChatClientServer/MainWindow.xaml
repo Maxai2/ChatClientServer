@@ -9,7 +9,8 @@
 	<Grid Margin="2">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="3*" MinHeight="100"/>
+			<RowDefinition Height="247*" MinHeight="100"/>
+			<RowDefinition Height="122*"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto" MinHeight="40"/>
 		</Grid.RowDefinitions>
@@ -31,7 +32,7 @@
 			</ListBox>
 		</Expander>
 
-		<Button Grid.Column="1" Grid.Row="1" VerticalAlignment="Bottom" BorderThickness="0" Background="Transparent" Content="X" FontSize="20"  Cursor="Hand" Click="CloseButton"/>
+		<Button Grid.Column="1" Grid.Row="2" VerticalAlignment="Bottom" BorderThickness="0" Background="Transparent" Content="X" FontSize="20"  Cursor="Hand" Click="CloseButton"/>
 
 		<Grid Grid.Row="0" Margin="2">
 			<Grid.ColumnDefinitions>
@@ -51,9 +52,9 @@
 			<Button Grid.Column="2" Margin="5 0 0 0" Content="Connect" Command="{Binding ConnectCom}" Visibility="{Binding ConButVis}"/>
 			<Button Grid.Column="2" Margin="5 0 0 0" Content="Disconnect" Visibility="{Binding DisconButVis}" Command="{Binding DisconnectCom}"/>
 
-		</Grid>
+		</Grid>	
 
-		<ListBox Name="lbMessages" ItemsSource="{Binding MessageList}" Grid.Row="1" IsEnabled="{Binding MessageListVis}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Segoe Print" FontSize="15">
+		<ListBox Name="lbMessages" ItemsSource="{Binding MessageList}" Grid.Row="1" IsEnabled="{Binding MessageListVis}" Background="#E5DDD5" IsTabStop="False" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Segoe Print" FontSize="15" Grid.RowSpan="2">
 
 			<ListBox.ItemTemplate>
 				<DataTemplate>
@@ -63,13 +64,15 @@
 							<Style TargetType="Border">
 								<Style.Triggers>
 
-									<DataTrigger Binding="{Binding leftRight}" Value="true">
-										<Setter Property="Background" Value="#DCF8C6"/>
-									</DataTrigger>
 									<DataTrigger Binding="{Binding leftRight}" Value="false">
 										<Setter Property="Background" Value="White"/>
+										<Setter Property="HorizontalAlignment" Value="Left"/>
 									</DataTrigger>
-									
+									<DataTrigger Binding="{Binding leftRight}" Value="true">
+										<Setter Property="Background" Value="#DCF8C6"/>
+										<Setter Property="HorizontalAlignment" Value="Right"/>
+									</DataTrigger>
+
 								</Style.Triggers>
 							</Style>
 						</Border.Style>
@@ -78,14 +81,6 @@
 						<TextBlock Text="{Binding name}" FontWeight="UltraBold"/>
 						<TextBlock Text="{Binding text}" TextWrapping="Wrap"/>
 							
-						<TextBlock.Triggers>
-							<DataTrigger Binding="{Binding leftRight}" Value="true">
-								<Setter Property="HorizontalAlignment" Value="Left"/>
-							</DataTrigger>
-							<DataTrigger Binding="{Binding leftRight}" Value="false">
-								<Setter Property="HorizontalAlignment" Value="Right"/>
-							</DataTrigger>
-						</TextBlock.Triggers>
 					</TextBlock>
 
 					</Border>
@@ -100,9 +95,9 @@
 			</ListBox.ItemContainerStyle>
 		</ListBox>
 
-		<GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
+		<GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch" IsTabStop="False"/>
 
-		<Grid Grid.Row="3" IsEnabled="{Binding	SendMessageVis}">
+		<Grid Grid.Row="4" IsEnabled="{Binding	SendMessageVis}">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto"/>
