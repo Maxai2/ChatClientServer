@@ -221,7 +221,7 @@ namespace ChatClientServer
             }
         }
 
-        public ObservableCollection<object> MessageList { get; set; }
+        public ObservableCollection<Message> MessageList { get; set; }
         public ObservableCollection<Run> Clients { get; set; }
 
         Dictionary<bool, SolidColorBrush> color;
@@ -238,7 +238,7 @@ namespace ChatClientServer
 
             DataContext = this;
 
-            MessageList = new ObservableCollection<object>();
+            MessageList = new ObservableCollection<Message>();
             Clients = new ObservableCollection<Run>();
 
             color = new Dictionary<bool, SolidColorBrush>()
@@ -258,30 +258,37 @@ namespace ChatClientServer
 
         void listFill(string name, string message, bool rightLeft)
         {
-            MessageList.Add(new ListBoxItem()
+            //MessageList.Add(new ListBoxItem()
+            //{
+            //    HorizontalAlignment = alignment[rightLeft],
+            //    IsTabStop = false,
+            //    //Tag = str,
+
+            //    Content = new Border()
+            //    {
+            //        BorderThickness = new Thickness(2),
+            //        CornerRadius = new CornerRadius(7),
+            //        Background = color[rightLeft],
+
+            //        Child = new TextBlock
+            //        {
+            //            Text = $"{new Run(name) { FontWeight = FontWeights.Bold }}: {message}",
+            //            //Text = $"{name}: {message}",
+            //            TextWrapping = TextWrapping.Wrap,
+            //            FontSize = 15,
+            //            FontFamily = new FontFamily("Segoe Print")
+            //        }
+            //    }
+            //});
+
+            MessageList.Add(new Message()
             {
-                HorizontalAlignment = alignment[rightLeft],
-                IsTabStop = false,
-                //Tag = str,
-
-                Content = new Border()
-                {
-                    BorderThickness = new Thickness(2),
-                    CornerRadius = new CornerRadius(7),
-                    Background = color[rightLeft],
-
-                    Child = new TextBlock
-                    {
-                        Text = $"{new Run(name) { FontWeight = FontWeights.Bold }}: {message}",
-                        //Text = $"{name}: {message}",
-                        TextWrapping = TextWrapping.Wrap,
-                        FontSize = 15,
-                        FontFamily = new FontFamily("Segoe Print")
-                    }
-                }
+                leftRight = rightLeft,
+                name = name,
+                text = message
             });
 
-            lbMessages.ScrollIntoView(lbMessages.Items.Cast<ListBoxItem>().Last());
+            lbMessages.ScrollIntoView(lbMessages.Items[lbMessages.Items.Count - 1]);
 
             TextMessage = "";
         }
